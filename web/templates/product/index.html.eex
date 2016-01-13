@@ -1,0 +1,11 @@
+<h2>Listing products</h2>
+
+<ul class="products">
+  <%= for product <- @products do %>
+    <li>
+      <h3><%= product.name %></h3>
+      <h4>$<%= product.price %></h4>
+      <p><%= product.description %></p>
+    </li>
+  <% end %>
+</ul>
