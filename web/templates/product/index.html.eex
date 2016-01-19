@@ -5,6 +5,7 @@
     <li>
       <h3><%= link product.name, to: product_path(@conn, :show, product.id) %></h3>
       <h4>$<%= product.price %></h4>
+      <img src="<%= PhoenixCommerce.Image.url({product.image, product}, :thumb) %>" />
       <p><%= product.description %></p>
     </li>
   <% end %>

@@ -1,16 +1,21 @@
 defmodule PhoenixCommerce.Product do
   use PhoenixCommerce.Web, :model
+  use Arc.Ecto.Model
 
   schema "products" do
     field :name, :string
     field :description, :string
     field :price, :decimal
+    field :image, PhoenixCommerce.Image.Type
 
     timestamps
   end
 
   @required_fields ~w(name description price)
   @optional_fields ~w()
+
+  @required_file_fields ~w()
+  @optional_file_fields ~w(image)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -21,5 +26,6 @@ defmodule PhoenixCommerce.Product do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
+    |> cast_attachments(params, @required_file_fields, @optional_file_fields)
   end
 end

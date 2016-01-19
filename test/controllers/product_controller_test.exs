@@ -1,8 +1,10 @@
 defmodule PhoenixCommerce.ProductControllerTest do
   use PhoenixCommerce.ConnCase
 
+  @upload %Plug.Upload{path: Path.relative_to_cwd("test/files/broom.jpg"), filename: "broom.jpg", content_type: "image/jpg"}
+
   alias PhoenixCommerce.Product
-  @valid_attrs %{description: "some content", name: "some content", price: "120.5"}
+  @valid_attrs %{description: "some content", name: "some content", price: "120.5", image: @upload}
   @invalid_attrs %{}
 
   test "lists all entries on index", %{conn: conn} do
@@ -18,7 +20,7 @@ defmodule PhoenixCommerce.ProductControllerTest do
   test "creates resource and redirects when data is valid", %{conn: conn} do
     conn = post conn, product_path(conn, :create), product: @valid_attrs
     assert redirected_to(conn) == product_path(conn, :index)
-    assert Repo.get_by(Product, @valid_attrs)
+    assert Repo.get_by(Product, Map.drop(@valid_attrs, [:image]))
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
@@ -48,7 +50,7 @@ defmodule PhoenixCommerce.ProductControllerTest do
     product = Repo.insert! %Product{}
     conn = put conn, product_path(conn, :update, product), product: @valid_attrs
     assert redirected_to(conn) == product_path(conn, :show, product)
-    assert Repo.get_by(Product, @valid_attrs)
+    assert Repo.get_by(Product, Map.drop(@valid_attrs, [:image]))
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do

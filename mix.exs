@@ -29,7 +29,7 @@ defmodule PhoenixCommerce.Mixfile do
 
   defp applications(_) do
      [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-      :phoenix_ecto, :postgrex]
+      :phoenix_ecto, :postgrex, :ex_aws, :httpoison]
   end
 
   # Specifies which paths to compile per environment.
@@ -48,7 +48,11 @@ defmodule PhoenixCommerce.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
-      {:hound, "~> 0.7.6", only: :test}
+      {:hound, "~> 0.7.6", only: :test},
+      {:arc, "~> 0.2.2"},
+      {:arc_ecto, "~> 0.3.1"},
+      {:ex_aws, "~> 0.4.10"},
+      {:httpoison, "~> 0.7"}
     ]
   end
 
