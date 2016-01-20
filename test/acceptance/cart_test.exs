@@ -27,7 +27,6 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
 
   test "adding product to cart shows product in cart", %{product: product} do
     navigate_to "/products/#{product.id}"
-    add_to_cart_button = find_element(:css, "button.add-to-cart")
     click(add_to_cart_button)
     navigate_to "/cart"
     assert length(line_items) == 1
@@ -43,4 +42,8 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
   def cart_tbody, do: find_within_element(cart_table, :css, "tbody")
 
   def line_items, do: find_all_within_element(cart_tbody, :css, "tr")
+
+  def add_to_cart_button do
+    find_element(:css, "input[type=submit].add-to-cart")
+  end
 end

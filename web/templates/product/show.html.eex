@@ -19,5 +19,9 @@
 
 </ul>
 
+<%= form_for @conn, add_to_cart_path(@conn, :add), [as: "add-to-cart"], fn f -> %>
+  <%= submit "Add to cart", class: "add-to-cart" %>
+<% end %>
+
 <%= link "Edit", to: product_path(@conn, :edit, @product) %>
 <%= link "Back", to: product_path(@conn, :index) %>
