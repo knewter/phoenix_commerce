@@ -35,7 +35,6 @@ defmodule PhoenixCommerce.Acceptance.ProductsTest do
     assert visible_text(price) == "$#{product.price}"
     assert visible_text(description) == product.description
     assert attribute_value(image, "src") =~ ~r/amazon/
-    IO.puts attribute_value(image, "src")
   end
 
   test "/products - click a product to view its details", %{product: product} do
