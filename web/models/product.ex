@@ -7,6 +7,7 @@ defmodule PhoenixCommerce.Product do
     field :description, :string
     field :price, :decimal
     field :image, PhoenixCommerce.Image.Type
+    has_many :line_items, PhoenixCommerce.LineItem
 
     timestamps
   end

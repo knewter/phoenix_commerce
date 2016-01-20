@@ -3,12 +3,14 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
   use Hound.Helpers
   hound_session
   alias PhoenixCommerce.Product
+  alias PhoenixCommerce.LineItem
   alias PhoenixCommerce.Repo
 
   @upload %Plug.Upload{path: Path.relative_to_cwd("test/files/broom.jpg"), filename: "broom.jpg", content_type: "image/jpg"}
 
   setup do
     Repo.delete_all(Product)
+    Repo.delete_all(LineItem)
     {:ok, product} =
       Product.changeset(%Product{}, %{
         name: "Some product",
@@ -28,7 +30,6 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
   test "adding product to cart shows product in cart", %{product: product} do
     navigate_to "/products/#{product.id}"
     click(add_to_cart_button)
-    navigate_to "/cart"
     assert length(line_items) == 1
     assert visible_text(hd(line_items)) =~ ~r/#{product.name}/
   end
