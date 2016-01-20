@@ -1,0 +1,9 @@
+<h2>Your cart</h2>
+<div class="cart">
+  <table>
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>

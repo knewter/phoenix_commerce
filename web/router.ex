@@ -18,6 +18,7 @@ defmodule PhoenixCommerce.Router do
 
     get "/", PageController, :index
     resources "/products", ProductController
+    get "/cart", CartController, :show
   end
 
   # Other scopes may use custom stacks.
