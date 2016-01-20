@@ -21,12 +21,26 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
 
   test "/cart shows empty cart" do
     navigate_to "/cart"
-    heading = find_element(:css, "h2")
-    cart = find_element(:css, ".cart")
-    cart_table = find_within_element(cart, :css, "table")
-    cart_tbody = find_within_element(cart_table, :css, "tbody")
-    line_items = find_all_within_element(cart_tbody, :css, "tr")
     assert visible_text(heading) == "Your cart"
     assert length(line_items) == 0
   end
+
+  test "adding product to cart shows product in cart", %{product: product} do
+    navigate_to "/products/#{product.id}"
+    add_to_cart_button = find_element(:css, "button.add-to-cart")
+    click(add_to_cart_button)
+    navigate_to "/cart"
+    assert length(line_items) == 1
+    assert visible_text(hd(line_items)) =~ ~r/#{product.name}/
+  end
+
+  def heading, do: find_element(:css, "h2")
+
+  def cart, do: find_element(:css, ".cart")
+
+  def cart_table, do: find_within_element(cart, :css, "table")
+
+  def cart_tbody, do: find_within_element(cart_table, :css, "tbody")
+
+  def line_items, do: find_all_within_element(cart_tbody, :css, "tr")
 end
