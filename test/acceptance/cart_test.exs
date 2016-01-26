@@ -9,8 +9,8 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
   @upload %Plug.Upload{path: Path.relative_to_cwd("test/files/broom.jpg"), filename: "broom.jpg", content_type: "image/jpg"}
 
   setup do
-    Repo.delete_all(Product)
     Repo.delete_all(LineItem)
+    Repo.delete_all(Product)
     {:ok, product} =
       Product.changeset(%Product{}, %{
         name: "Some product",

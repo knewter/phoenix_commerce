@@ -1,9 +1,11 @@
 defmodule PhoenixCommerce.LineItemTest do
   use PhoenixCommerce.ModelCase
 
-  alias PhoenixCommerce.LineItem
+  alias PhoenixCommerce.{LineItem, Repo, Cart, Product}
 
-  @valid_attrs %{product_id: 42, quantity: 42, cart_id: 2}
+  @product Repo.insert!(%Product{name: "Some product", description: "Some product", price: Decimal.new("22.50")})
+  @cart Repo.insert!(%Cart{})
+  @valid_attrs %{product_id: @product.id, quantity: 42, cart_id: @cart.id}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

@@ -3,7 +3,7 @@ defmodule PhoenixCommerce.Repo.Migrations.CreateLineItem do
 
   def change do
     create table(:line_items) do
-      add :product_id, :integer
+      add :product_id, references(:products)
       add :quantity, :integer
 
       timestamps
