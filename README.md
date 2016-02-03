@@ -13,6 +13,12 @@ To start your Phoenix app:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
+You can seed the development database with:
+
+```sh
+mix do ecto.drop, ecto.create, ecto.migrate, run priv/repo/seeds.exs
+```
+
 ## Tests
 
 The tests are heavily focused on acceptance-tests that drive a browser.

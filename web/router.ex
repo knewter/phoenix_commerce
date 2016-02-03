@@ -18,6 +18,7 @@ defmodule PhoenixCommerce.Router do
 
     get "/", PageController, :index
     resources "/products", ProductController
+    resources "/line_items", LineItemController
     get "/cart", CartController, :show
     post "/cart/add", CartController, :add, as: :add_to_cart
   end
