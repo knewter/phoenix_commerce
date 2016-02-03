@@ -19,6 +19,6 @@ config :phoenix_commerce, PhoenixCommerce.Repo,
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :hound,
-  driver: "chrome_driver",
+  driver: "phantomjs",
   app_host: "http://localhost",
   app_port: 4001
