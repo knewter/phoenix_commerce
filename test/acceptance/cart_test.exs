@@ -43,6 +43,21 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
     assert length(line_items) == 0
   end
 
+  test "removing an item from the cart", %{product: product} do
+    navigate_to "/products/#{product.id}"
+    click(add_to_cart_button)
+    assert length(line_items) == 1
+    click(remove_from_cart_button(product))
+    assert length(line_items) == 0
+  end
+
+  test "updating a line item's quantity", %{product: product} do
+    navigate_to "/products/#{product.id}"
+    click(add_to_cart_button)
+    update_quantity(product, 5)
+    assert quantity(product) == 5
+  end
+
   def heading, do: find_element(:css, "h2")
   def cart, do: find_element(:css, ".cart")
   def cart_table, do: find_within_element(cart, :css, "table")
@@ -50,5 +65,31 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
   def line_items, do: find_all_within_element(cart_tbody, :css, "tr")
   def add_to_cart_button do
     find_element(:css, "input[type=submit].add-to-cart")
+  end
+  def remove_from_cart_button(product) do
+    product_row(product)
+    |> find_within_element(:css, ".remove-from-cart")
+  end
+  def product_row(product) do
+    find_element(:css, "tr.product-#{product.id}")
+  end
+  def quantity_field(product) do
+    product_row(product)
+    |> find_within_element(:css, ".quantity")
+  end
+  def update_quantity(product, qty) do
+    quantity_field(product)
+    |> fill_field(qty)
+
+    quantity_field(product)
+    |> submit_element
+  end
+  def quantity(product) do
+    {qty, _} =
+      quantity_field(product)
+      |> attribute_value(:value)
+      |> Integer.parse
+
+    qty
   end
 end
