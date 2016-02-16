@@ -2,12 +2,12 @@ defmodule PhoenixCommerce.Acceptance.ProductsTest do
   use ExUnit.Case
   use Hound.Helpers
   hound_session
-  alias PhoenixCommerce.Product
-  alias PhoenixCommerce.Repo
+  alias PhoenixCommerce.{Product, LineItem, Repo}
 
   @upload %Plug.Upload{path: Path.relative_to_cwd("test/files/broom.jpg"), filename: "broom.jpg", content_type: "image/jpg"}
 
   setup do
+    Repo.delete_all(LineItem)
     Repo.delete_all(Product)
     {:ok, product} =
       Product.changeset(%Product{}, %{

@@ -3,9 +3,9 @@ defmodule PhoenixCommerce.RegisterTest do
   alias PhoenixCommerce.{Product, LineItem, Cart, Register, Order, Repo}
 
   setup do
-    Repo.delete_all(Cart)
     Repo.delete_all(LineItem)
     Repo.delete_all(Product)
+    Repo.delete_all(Cart)
     {:ok, product} =
       Product.changeset(%Product{}, %{
         name: "Some product",
