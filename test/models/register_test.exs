@@ -31,4 +31,19 @@ defmodule PhoenixCommerce.RegisterTest do
     assert {:ok, order=%Order{}} = Register.order(cart)
     assert 1 = length(order.line_items)
   end
+
+  @tag :external
+  test "charging for an order at Stripe", %{cart: cart} do
+    params = [
+      number: "4111111111111111",
+      exp_month: 10,
+      exp_year: 2020,
+      country: "US",
+      name: "Phoenix Commerce",
+      cvc: 123
+    ]
+    assert {:ok, charge} = Register.charge(cart, params)
+    {:ok, fetched_charge} = Stripe.Charges.get(charge.id)
+    assert fetched_charge.amount == 2_520
+  end
 end
