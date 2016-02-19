@@ -2,13 +2,13 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
   use ExUnit.Case
   use Hound.Helpers
   hound_session
-  alias PhoenixCommerce.Product
-  alias PhoenixCommerce.LineItem
-  alias PhoenixCommerce.Repo
+  alias PhoenixCommerce.{Product, LineItem, Order, Repo, Cart}
 
   @upload %Plug.Upload{path: Path.relative_to_cwd("test/files/broom.jpg"), filename: "broom.jpg", content_type: "image/jpg"}
 
   setup do
+    Repo.delete_all(Order)
+    Repo.delete_all(Cart)
     Repo.delete_all(LineItem)
     Repo.delete_all(Product)
     {:ok, product} =
@@ -58,6 +58,13 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
     assert quantity(product) == 5
   end
 
+  test "checking out a cart" do
+    navigate_to "/cart"
+    click(checkout_button)
+    order = get_last_order
+    assert order.line_items[0].amount == Decimal.new("25.20")
+  end
+
   def heading, do: find_element(:css, "h2")
   def cart, do: find_element(:css, ".cart")
   def cart_table, do: find_within_element(cart, :css, "table")
@@ -91,5 +98,11 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
       |> Integer.parse
 
     qty
+  end
+  def checkout_button do
+    find_element(:css, "input[type=submit].checkout")
+  end
+  def get_last_order do
+    Repo.all(Order) |> tl
   end
 end
