@@ -24,4 +24,7 @@
       <% end %>
     </tbody>
   </table>
+  <%= form_for @conn, checkout_path(@conn, :checkout), [as: "checkout"], fn _ -> %>
+    <%= submit("Checkout", class: "checkout") %>
+  <% end %>
 </div>

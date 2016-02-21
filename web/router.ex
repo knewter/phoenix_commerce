@@ -20,6 +20,7 @@ defmodule PhoenixCommerce.Router do
     resources "/products", ProductController
     get "/cart", CartController, :show
     post "/cart/add", CartController, :add, as: :add_to_cart
+    post "/cart/checkout", CartController, :checkout, as: :checkout
     resources "/line_items", LineItemController
   end
 

@@ -27,6 +27,10 @@ defmodule PhoenixCommerce.CartController do
     redirect conn, to: cart_path(conn, :show)
   end
 
+  def checkout(conn, _params) do
+    redirect conn, to: cart_path(conn, :show)
+  end
+
   def add_cart(conn, _opts) do
     cart = case get_session(conn, :cart_uuid) do
       nil ->

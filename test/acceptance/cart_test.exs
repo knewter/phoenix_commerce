@@ -3,6 +3,7 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
   use Hound.Helpers
   hound_session
   alias PhoenixCommerce.{Product, LineItem, Order, Repo, Cart}
+  import Ecto.Query, only: [from: 2]
 
   @upload %Plug.Upload{path: Path.relative_to_cwd("test/files/broom.jpg"), filename: "broom.jpg", content_type: "image/jpg"}
 
@@ -60,8 +61,9 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
 
   test "checking out a cart" do
     navigate_to "/cart"
-    click(checkout_button)
+    checkout
     order = get_last_order
+    assert order != nil
     assert order.line_items[0].amount == Decimal.new("25.20")
   end
 
@@ -99,10 +101,17 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
 
     qty
   end
+  def checkout do
+    click(checkout_button)
+  end
   def checkout_button do
     find_element(:css, "input[type=submit].checkout")
   end
   def get_last_order do
-    Repo.all(Order) |> tl
+    query =
+      from o in Order,
+      order_by: [desc: o.inserted_at]
+
+    Repo.one(query)
   end
 end
