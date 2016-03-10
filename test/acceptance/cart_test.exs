@@ -59,12 +59,14 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
     assert quantity(product) == 5
   end
 
-  test "checking out a cart" do
+  test "checking out a cart", %{product: product} do
+    navigate_to "/products/#{product.id}"
+    click(add_to_cart_button)
     navigate_to "/cart"
     checkout
     order = get_last_order
     assert order != nil
-    assert order.line_items[0].amount == Decimal.new("25.20")
+    assert hd(order.line_items).quantity == 1
   end
 
   def heading, do: find_element(:css, "h2")
@@ -103,14 +105,48 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
   end
   def checkout do
     click(checkout_button)
+    :timer.sleep(1000) # Give the modal time to appear
+    focus_frame("stripe_checkout_app")
+    fill_email("josh.rubyist@gmail.com")
+    fill_card_number("4111")
+    fill_card_number("1111")
+    fill_card_number("1111")
+    fill_card_number("1111")
+    fill_date("11")
+    fill_date("17")
+    fill_cvc("111")
+    submit_checkout
+    focus_parent_frame
+    :timer.sleep(6_000) # Give the controller time to order the cart
+  end
+  def fill_email(val) do
+    find_element(:css, "#email")
+    |> fill_field(val)
+  end
+  def fill_card_number(val) do
+    find_element(:css, "#card_number")
+    |> input_into_field(val)
+  end
+  def fill_date(val) do
+    find_element(:css, "#cc-exp")
+    |> input_into_field(val)
+  end
+  def fill_cvc(val) do
+    find_element(:css, "#cc-csc")
+    |> fill_field(val)
+  end
+  def submit_checkout do
+    find_element(:css, "#submitButton")
+    |> click
   end
   def checkout_button do
-    find_element(:css, "input[type=submit].checkout")
+    find_element(:css, "button.stripe-button-el")
   end
   def get_last_order do
     query =
       from o in Order,
-      order_by: [desc: o.inserted_at]
+      order_by: [desc: o.inserted_at],
+      preload: [:line_items]
 
     Repo.one(query)
   end

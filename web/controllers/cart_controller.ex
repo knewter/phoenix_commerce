@@ -1,8 +1,7 @@
 defmodule PhoenixCommerce.CartController do
   use PhoenixCommerce.Web, :controller
 
-  alias PhoenixCommerce.LineItem
-  alias PhoenixCommerce.Cart
+  alias PhoenixCommerce.{LineItem, Cart, Register}
 
   plug :add_cart
 
@@ -27,7 +26,9 @@ defmodule PhoenixCommerce.CartController do
     redirect conn, to: cart_path(conn, :show)
   end
 
-  def checkout(conn, _params) do
+  def checkout(conn, params) do
+    Register.charge(conn.assigns[:cart], params["stripeToken"])
+    Register.order(conn.assigns[:cart])
     redirect conn, to: cart_path(conn, :show)
   end
 

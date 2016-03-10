@@ -36,3 +36,5 @@ config :ex_aws,
   secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY")
 
 config :stripity_stripe, secret_key: System.get_env("STRIPE_SECRET_KEY")
+
+config :phoenix_commerce, stripe_publishable_key: System.get_env("STRIPE_PUBLISHABLE_KEY")
