@@ -24,20 +24,26 @@ defmodule PhoenixCommerce.Register do
   end
 
   @spec charge(%Cart{}, term()) :: {:ok, map()}
-  def charge(cart=%Cart{}, card_params) do
-    amount = cart_amount(cart)
-
-    amount_in_cents_d = Decimal.mult(amount, Decimal.new(100))
-    {amount_in_cents, _} = amount_in_cents_d |> Decimal.to_string |> Integer.parse
+  def charge(cart=%Cart{}, token) do
+    amount_in_cents = cart_amount_in_cents(cart)
 
     params = [
-      source: put_in(card_params[:object], "card")
+      source: token,
+      description: "PhoenixCommerce charge"
     ]
 
     Stripe.Charges.create amount_in_cents, params
   end
 
-  defp cart_amount(cart=%Cart{}) do
+  def cart_amount_in_cents(cart=%Cart{}) do
+    amount = cart_amount(cart)
+
+    amount_in_cents_d = Decimal.mult(amount, Decimal.new(100))
+    {amount_in_cents, _} = amount_in_cents_d |> Decimal.to_string |> Integer.parse
+    amount_in_cents
+  end
+
+  def cart_amount(cart=%Cart{}) do
     line_items_query =
       from li in LineItem,
       join: product in assoc(li, :product),

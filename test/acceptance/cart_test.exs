@@ -2,13 +2,14 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
   use ExUnit.Case
   use Hound.Helpers
   hound_session
-  alias PhoenixCommerce.Product
-  alias PhoenixCommerce.LineItem
-  alias PhoenixCommerce.Repo
+  alias PhoenixCommerce.{Product, LineItem, Repo, Order, Cart}
+  import Ecto.Query, only: [from: 2]
 
   @upload %Plug.Upload{path: Path.relative_to_cwd("test/files/broom.jpg"), filename: "broom.jpg", content_type: "image/jpg"}
 
   setup do
+    Repo.delete_all(Order)
+    Repo.delete_all(Cart)
     Repo.delete_all(LineItem)
     Repo.delete_all(Product)
     {:ok, product} =
@@ -56,6 +57,63 @@ defmodule PhoenixCommerce.Acceptance.CartTest do
     click(add_to_cart_button)
     update_quantity(product, 5)
     assert quantity(product) == 5
+  end
+
+  test "checking out a cart", %{product: product} do
+    navigate_to "/products/#{product.id}"
+    click(add_to_cart_button)
+    navigate_to "/cart"
+    checkout
+    order = get_last_order
+    assert order != nil
+    assert hd(order.line_items).quantity == 1
+  end
+
+  def checkout do
+    click(checkout_button)
+    :timer.sleep(1_000) # give the modal time to appear
+    focus_frame("stripe_checkout_app")
+    fill_email("josh.rubyist@gmail.com")
+    fill_card_number("4111")
+    fill_card_number("1111")
+    fill_card_number("1111")
+    fill_card_number("1111")
+    fill_date("11")
+    fill_date("17")
+    fill_cvc("111")
+    submit_checkout
+    :timer.sleep(6_000)
+  end
+  def fill_email(val) do
+    find_element(:css, "#email")
+    |> fill_field(val)
+  end
+  def fill_card_number(val) do
+    find_element(:css, "#card_number")
+    |> input_into_field(val)
+  end
+  def fill_date(val) do
+    find_element(:css, "#cc-exp")
+    |> input_into_field(val)
+  end
+  def fill_cvc(val) do
+    find_element(:css, "#cc-csc")
+    |> fill_field(val)
+  end
+  def submit_checkout do
+    find_element(:css, "#submitButton")
+    |> click
+  end
+  def checkout_button do
+    find_element(:css, "button.stripe-button-el")
+  end
+  def get_last_order do
+    query =
+      from o in Order,
+      order_by: [desc: o.inserted_at],
+      preload: [:line_items]
+
+    Repo.one(query)
   end
 
   def heading, do: find_element(:css, "h2")

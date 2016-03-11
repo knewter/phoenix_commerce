@@ -24,4 +24,18 @@
       <% end %>
     </tbody>
   </table>
+  <h3>Total</h3>
+  <p><%= PhoenixCommerce.Register.cart_amount(@cart) %></p>
+  <%= form_for @conn, checkout_path(@conn, :checkout), [as: "checkout"], fn _ -> %>
+    <script
+      src="https://checkout.stripe.com/checkout.js"
+      class="stripe-button"
+      data-key="<%= Application.get_env(:phoenix_commerce, :stripe_publishable_key) %>"
+      data-amount="<%= PhoenixCommerce.Register.cart_amount_in_cents(@cart) %>"
+      data-name="Phoenix Commerce"
+      data-description="Some items..."
+      data-image="/images/phoenix.png"
+      data-locale="auto">
+    </script>
+  <% end %>
 </div>

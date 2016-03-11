@@ -21,6 +21,7 @@ defmodule PhoenixCommerce.Router do
     get "/cart", CartController, :show
     post "/cart/add", CartController, :add, as: :add_to_cart
     resources "/line_items", LineItemController
+    post "/cart/checkout", CartController, :checkout, as: :checkout
   end
 
   # Other scopes may use custom stacks.
